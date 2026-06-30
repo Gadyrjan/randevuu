@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="tk">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Max Surat Merkezi</title>
+    <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-database-compat.js"></script>
+    <style>
+        /* Senin o harika iOS tasarım kodlarını buraya yapıştırabilirsin */
+        body { font-family: sans-serif; background: #1a1a2e; color: white; padding: 20px; text-align: center; }
+        .glass-card { background: rgba(255,255,255,0.1); padding: 20px; border-radius: 20px; border: 1px solid white; max-width: 400px; margin: auto; }
+        input { width: 90%; padding: 12px; margin: 10px; border-radius: 10px; border: none; }
+        .submit-btn { width: 90%; padding: 15px; background: #8b5cf6; color: white; border-radius: 10px; border: none; font-weight: bold; }
+    </style>
+</head>
+<body>
+    <div class="glass-card">
+        <h1>MAX SURAT</h1>
+        <form id="appointmentForm">
+            <input type="text" id="name" placeholder="Adyňyz we Familiýaňyz" required>
+            <input type="datetime-local" id="datetime" required>
+            <div style="text-align: left; padding: 10px;">
+                <input type="checkbox" name="service" value="Surat" id="s1"> <label for="s1">📷 Surata düşmek</label><br>
+                <input type="checkbox" name="service" value="Kopiýa" id="s2"> <label for="s2">🖨️ Kopya etdirmek</label>
+            </div>
+            <button type="submit" id="btn" class="submit-btn">TASSYKLA</button>
+        </form>
+        <div id="msg" style="margin-top:20px; display:none; color: lime;">Üstünlikli ugradyldy!</div>
+    </div>
+
+    <script>
+        const firebaseConfig = {
+            apiKey: "AIzaSyAzFwxW8nB155ILbdxuj5DREx2s_ltHme4",
+            authDomain: "makga-8a13a.firebaseapp.com",
+            databaseURL: "https://makga-8a13a-default-rtdb.europe-west1.firebasedatabase.app",
+            projectId: "makga-8a13a",
+            storageBucket: "makga-8a13a.firebasestorage.app",
+            messagingSenderId: "875840350708",
+            appId: "1:875840350708:web:eeea3cffd993d2a3d2f1a1"
+        };
+
+        firebase.initializeApp(firebaseConfig);
+        const db = firebase.database();
+
+        document.getElementById('appointmentForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            const btn = document.getElementById('btn');
+            btn.innerText = "Ugradylýar...";
+            btn.disabled = true;
+
+            const name = document.getElementById('name').value;
+            const time = document.getElementById('datetime').value;
+            const svcs = Array.from(document.querySelectorAll('input[name="service"]:checked')).map(el => el.value);
+
+            db.ref("randevular").push({
+                musteri: name,
+                tarih: time,
+                hizmetler: svcs.join(", "),
+                vakit: Date.now()
+            }).then(() => {
+                document.getElementById('msg').style.display = 'block';
+                btn.innerText = "TASSYKLA";
+                btn.disabled = false;
+                this.reset();
+            }).catch(err => {
+                alert("Hata: " + err.message);
+                btn.disabled = false;
+            });
+        });
+    </script>
+</body>
+</html>

@@ -10,112 +10,136 @@
     
     <style>
         :root {
-            --bg: #000000;
-            --card: #1c1c1e;
+            --bg: #000;
+            --card-bg: rgba(28, 28, 30, 0.7);
             --accent: #5e5ce6;
-            --green: #30d158;
-            --red: #ff453a;
-            --text-main: #ffffff;
-            --text-sec: #8e8e93;
+            --green: #34c759;
+            --red: #ff3b30;
+            --text-primary: #ffffff;
+            --text-secondary: #8e8e93;
         }
 
-        * { margin: 0; padding: 0; box-sizing: border-box; font-family: -apple-system, BlinkMacSystemFont, sans-serif; }
+        * { margin: 0; padding: 0; box-sizing: border-box; font-family: -apple-system, BlinkMacSystemFont, "SF Pro Display", sans-serif; }
 
         body { 
-            background-color: var(--bg);
-            color: var(--text-main);
+            background: var(--bg);
+            color: var(--text-primary);
             min-height: 100vh;
             padding: 20px;
+            overflow-x: hidden;
+        }
+
+        /* iOS 26 Arka tarap - Örän ýumşak */
+        .bg-glow {
+            position: fixed;
+            width: 100%; height: 100%;
+            background: radial-gradient(circle at 10% 10%, rgba(94, 92, 230, 0.1) 0%, transparent 40%),
+                        radial-gradient(circle at 90% 90%, rgba(52, 199, 89, 0.05) 0%, transparent 40%);
+            z-index: -1;
         }
 
         .container { max-width: 500px; margin: 0 auto; }
 
         /* Header */
         .header {
-            padding: 20px 5px;
-            margin-bottom: 20px;
+            padding: 25px 5px;
             display: flex;
             justify-content: space-between;
             align-items: center;
         }
 
-        .header h1 { font-size: 28px; font-weight: 700; letter-spacing: -0.5px; }
-        .header p { color: var(--text-sec); font-size: 14px; }
+        .header h1 { font-size: 30px; font-weight: 800; letter-spacing: -1px; }
+        .header p { color: var(--text-secondary); font-size: 14px; font-weight: 500; }
 
-        /* Ses düwmesi - Hökman basmaly */
+        /* Sesi işjeňleşdiriji düwme */
         #sound-btn {
             background: var(--accent);
             color: white; border: none;
-            width: 100%; padding: 16px;
-            border-radius: 14px; margin-bottom: 20px;
-            font-weight: 700; cursor: pointer;
-            font-size: 16px;
-            box-shadow: 0 4px 15px rgba(94, 92, 230, 0.3);
+            width: 100%; padding: 18px;
+            border-radius: 20px; margin-bottom: 25px;
+            font-weight: 700; font-size: 16px;
+            cursor: pointer;
+            box-shadow: 0 10px 25px rgba(94, 92, 230, 0.2);
+            transition: 0.3s;
         }
+        #sound-btn:active { transform: scale(0.97); }
 
-        /* Randewu Karty - Has dury we okalýan */
+        /* Randewu Karty - iOS 26 Ýumşaklygy */
         .card {
-            background: var(--card);
-            border-radius: 20px;
-            padding: 20px;
-            margin-bottom: 15px;
-            border: 1px solid #38383a;
+            background: var(--card-bg);
+            backdrop-filter: blur(25px) saturate(180%);
+            -webkit-backdrop-filter: blur(25px) saturate(180%);
+            border-radius: 30px;
+            padding: 25px;
+            margin-bottom: 18px;
+            border: 1px solid rgba(255, 255, 255, 0.08);
             position: relative;
-            animation: fadeIn 0.4s ease;
+            animation: slideUp 0.5s ease;
         }
 
-        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+        @keyframes slideUp { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
 
-        .name { font-size: 22px; font-weight: 700; margin-bottom: 10px; color: #fff; }
+        .name { font-size: 24px; font-weight: 700; margin-bottom: 8px; }
         
         .phone {
-            display: inline-flex; align-items: center;
-            color: var(--green); font-weight: 700; font-size: 18px;
-            text-decoration: none; margin-bottom: 15px;
-            background: rgba(48, 209, 88, 0.15); 
-            padding: 8px 15px; border-radius: 12px;
+            display: inline-block;
+            color: var(--green); font-weight: 700; font-size: 19px;
+            text-decoration: none; margin-bottom: 20px;
+            background: rgba(52, 199, 89, 0.12);
+            padding: 10px 18px; border-radius: 15px;
         }
 
-        .info-row { margin-bottom: 8px; font-size: 15px; color: #d1d1d6; display: flex; align-items: center; gap: 10px; }
-        .label { color: var(--text-sec); font-weight: 500; min-width: 70px; }
+        .info-box {
+            background: rgba(255, 255, 255, 0.03);
+            border-radius: 18px;
+            padding: 15px;
+            display: flex; flex-direction: column; gap: 10px;
+        }
+
+        .info-row { display: flex; align-items: flex-start; gap: 12px; font-size: 15px; }
+        .info-row span:first-child { color: var(--text-secondary); min-width: 80px; font-weight: 500; }
+        .info-row b { color: #fff; font-weight: 600; flex: 1; }
 
         .delete-btn {
-            position: absolute; right: 15px; top: 15px;
-            background: rgba(255, 69, 58, 0.2);
-            border: none; border-radius: 10px;
-            color: var(--red); padding: 8px 12px; font-weight: 700; cursor: pointer;
+            position: absolute; right: 20px; top: 25px;
+            background: rgba(255, 59, 48, 0.15);
+            border: none; border-radius: 12px;
+            color: var(--red); padding: 10px 15px; font-weight: 700; cursor: pointer;
         }
 
-        .time-stamp {
-            font-size: 12px; color: var(--text-sec); margin-top: 15px; border-top: 1px solid #38383a; padding-top: 10px;
+        .time-footer {
+            font-size: 11px; color: var(--text-secondary); margin-top: 15px; text-align: right;
         }
 
-        .empty { text-align: center; padding: 100px 20px; color: var(--text-sec); font-size: 18px; }
+        .empty { text-align: center; margin-top: 100px; color: var(--text-secondary); font-size: 18px; }
     </style>
 </head>
 <body>
+    <div class="bg-glow"></div>
 
     <div class="container">
         <div class="header">
             <div>
                 <h1>Randewular</h1>
-                <p id="counter">Sany: 0</p>
+                <p id="counter">Täze ýazgylar garaşýar</p>
             </div>
-            <div id="online-tag" style="color: var(--green); font-weight: 700; font-size: 12px;">● ONLAÝN</div>
+            <div style="background: rgba(52, 199, 89, 0.1); color: var(--green); padding: 5px 12px; border-radius: 12px; font-size: 11px; font-weight: 800;">● JANLY</div>
         </div>
 
-        <!-- SESI AÇMAK ÜÇIN -->
-        <button id="sound-btn" onclick="enableSound()">
-            🔔 Sesli bildirişi işjeňleşdir
+        <!-- BU DÜWMÄ HÖKMAN BASYŇ -->
+        <button id="sound-btn" onclick="startSystem()">
+            🔔 Randewu sesini işjeňleşdir
         </button>
 
         <div id="list">
-            <div class="empty">Garaşylýar...</div>
+            <div class="empty">Maglumatlar ýüklenýär...</div>
         </div>
     </div>
 
-    <!-- iPhone SMS Sesi (Tritone) -->
-    <audio id="iosSound" src="https://raw.githubusercontent.com/Anis-M-H/notification-sounds/main/iphone_sms.mp3" preload="auto"></audio>
+    <!-- Hökman işleýän ses (Kodyň içine goýuldy) -->
+    <audio id="notifSound" preload="auto">
+        <source src="https://assets.mixkit.co/active_storage/sfx/2869/2869-preview.mp3" type="audio/mpeg">
+    </audio>
 
     <script>
         const firebaseConfig = {
@@ -130,43 +154,40 @@
         firebase.initializeApp(firebaseConfig);
         const db = firebase.database();
 
-        let canPlaySound = false;
-        let isFirstLoad = true;
+        let isSoundEnabled = false;
+        let isInitialLoad = true;
 
-        function enableSound() {
-            const audio = document.getElementById("iosSound");
+        function startSystem() {
+            const audio = document.getElementById("notifSound");
             audio.play().then(() => {
                 audio.pause();
-                audio.currentTime = 0;
-                canPlaySound = true;
+                isSoundEnabled = true;
                 document.getElementById("sound-btn").style.display = "none";
-                alert("Ses işjeňleşdi! Täze randewu gelende iPhone sesi çalar.");
-            }).catch(e => alert("Sesi açyp bolmady."));
+            }).catch(e => console.log("Rugsat berilmedi."));
         }
 
-        // Täze randewu gelende
+        // Täze randewu düşende ses çalmak
         db.ref("randevular").on("child_added", (snap) => {
-            if (!isFirstLoad && canPlaySound) {
-                const audio = document.getElementById("iosSound");
-                audio.play().catch(e => console.log("Ses çalynmady."));
+            if (!isInitialLoad && isSoundEnabled) {
+                document.getElementById("notifSound").play();
             }
         });
 
-        // Listäni ekrana çykarmak
+        // Listäni we hyzmatlary görkezmek
         db.ref("randevular").on("value", (snap) => {
             const listDiv = document.getElementById("list");
             const data = snap.val();
             listDiv.innerHTML = "";
             
             if(!data) {
-                listDiv.innerHTML = '<div class="empty">Häzirlikçe randewu ýok.</div>';
+                listDiv.innerHTML = '<div class="empty">📭 Häzirlikçe täze ýazgy ýok.</div>';
                 document.getElementById("counter").innerText = "Sany: 0";
-                isFirstLoad = false;
+                isInitialLoad = false;
                 return;
             }
 
             const keys = Object.keys(data).reverse();
-            document.getElementById("counter").innerText = "Sany: " + keys.length;
+            document.getElementById("counter").innerText = "Jemi: " + keys.length + " sany randewu";
 
             keys.forEach(id => {
                 const r = data[id];
@@ -176,23 +197,27 @@
                     <button class="delete-btn" onclick="sil('${id}')">Poz</button>
                     <div class="name">${r.musteri}</div>
                     <a href="tel:${r.telefon}" class="phone">📞 ${r.telefon}</a>
-                    <div class="info-row">
-                        <span class="label">Wagty:</span>
-                        <b>${r.tarih.replace("T", " | ")}</b>
+                    
+                    <div class="info-box">
+                        <div class="info-row">
+                            <span>📅 Wagty:</span>
+                            <b>${r.tarih ? r.tarih.replace("T", " | ") : "Bellenilmedik"}</b>
+                        </div>
+                        <div class="info-row">
+                            <span>🛠️ Hyzmat:</span>
+                            <b>${r.hyzmatlar || "Saýlanmady"}</b>
+                        </div>
                     </div>
-                    <div class="info-row">
-                        <span class="label">Hyzmat:</span>
-                        <b>${r.hizmetler}</b>
-                    </div>
-                    <div class="time-stamp">Ugradylan wagty: ${new Date(r.vakit).toLocaleTimeString()}</div>
+                    
+                    <div class="time-footer">Gelen wagty: ${new Date(r.vakit).toLocaleTimeString()}</div>
                 `;
                 listDiv.appendChild(card);
             });
-            isFirstLoad = false;
+            isInitialLoad = false;
         });
 
         function sil(id) {
-            if(confirm("Bu randewu pozulsynmy?")) {
+            if(confirm("Bu randewuny pozmalymy?")) {
                 db.ref("randevular/" + id).remove();
             }
         }

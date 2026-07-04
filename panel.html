@@ -1,0 +1,282 @@
+<!DOCTYPE html>
+<html lang="tk">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MAX - Dolandyryş Paneli</title>
+    <!-- Firebase SDK -->
+    <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-database-compat.js"></script>
+    
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; font-family: -apple-system, BlinkMacSystemFont, 'SF Pro Display', sans-serif; }
+        
+        body { 
+            background: #09090e; 
+            color: white; 
+            min-height: 100vh; 
+            padding: 20px; 
+            overflow-x: hidden;
+        }
+
+        /* Ultra Modern iOS Background */
+        .bg-glow {
+            position: fixed;
+            width: 300px;
+            height: 300px;
+            background: radial-gradient(circle, rgba(139, 92, 246, 0.4) 0%, transparent 70%);
+            top: -100px;
+            right: -100px;
+            filter: blur(60px);
+            z-index: -1;
+            animation: pulse 10s infinite alternate;
+        }
+
+        .bg-glow-2 {
+            position: fixed;
+            width: 400px;
+            height: 400px;
+            background: radial-gradient(circle, rgba(59, 130, 246, 0.3) 0%, transparent 70%);
+            bottom: -150px;
+            left: -150px;
+            filter: blur(60px);
+            z-index: -1;
+            animation: pulse 8s infinite alternate-reverse;
+        }
+
+        @keyframes pulse {
+            0% { transform: scale(1) translate(0, 0); }
+            100% { transform: scale(1.2) translate(30px, 30px); }
+        }
+
+        .container { max-width: 800px; margin: 0 auto; padding-top: 20px; }
+
+        /* Üst Header Kısmı */
+        .header-glass {
+            background: rgba(255, 255, 255, 0.03);
+            backdrop-filter: blur(30px);
+            -webkit-backdrop-filter: blur(30px);
+            border: 1px solid rgba(255, 255, 255, 0.05);
+            border-radius: 30px;
+            padding: 30px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 30px;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.3);
+        }
+
+        .header-left h1 { font-size: 28px; font-weight: 800; letter-spacing: -1px; background: linear-gradient(135deg, #fff, #a5b4fc); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
+        .header-left p { color: #94a3b8; font-size: 14px; margin-top: 5px; }
+
+        /* Canlı Bağlantı Göstergesi */
+        .live-status {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            background: rgba(34, 197, 94, 0.1);
+            padding: 10px 20px;
+            border-radius: 20px;
+            border: 1px solid rgba(34, 197, 94, 0.2);
+        }
+
+        .dot {
+            width: 10px; height: 10px; background: #22c55e; border-radius: 50%;
+            box-shadow: 0 0 10px #22c55e;
+            animation: blink 1.5s infinite;
+        }
+
+        @keyframes blink { 0% { opacity: 1; } 50% { opacity: 0.4; } 100% { opacity: 1; } }
+
+        .live-text { color: #86efac; font-weight: 600; font-size: 14px; letter-spacing: 1px; }
+
+        /* Randevu Kartları */
+        .cards-container { display: flex; flex-direction: column; gap: 20px; }
+
+        .appointment-card {
+            background: rgba(255, 255, 255, 0.05);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 24px;
+            padding: 25px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+            animation: slideIn 0.5s forwards;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .appointment-card::before {
+            content: ''; position: absolute; left: 0; top: 0; height: 100%; width: 5px;
+            background: linear-gradient(to bottom, #8b5cf6, #3b82f6);
+        }
+
+        .appointment-card:hover {
+            transform: translateY(-5px);
+            background: rgba(255, 255, 255, 0.08);
+            box-shadow: 0 15px 30px rgba(0,0,0,0.4);
+            border-color: rgba(255, 255, 255, 0.2);
+        }
+
+        @keyframes slideIn {
+            from { opacity: 0; transform: translateY(30px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .client-info h2 { font-size: 22px; margin-bottom: 8px; font-weight: 700; color: #fff; }
+        
+        .detail-row { display: flex; align-items: center; gap: 10px; margin-bottom: 5px; color: #cbd5e1; font-size: 15px; }
+        .detail-icon { background: rgba(255,255,255,0.1); padding: 5px 8px; border-radius: 8px; font-size: 12px; }
+
+        .time-badge {
+            background: rgba(139, 92, 246, 0.15);
+            color: #c4b5fd;
+            padding: 5px 12px;
+            border-radius: 12px;
+            font-size: 13px;
+            font-weight: 600;
+            border: 1px solid rgba(139, 92, 246, 0.3);
+            display: inline-block;
+            margin-top: 10px;
+        }
+
+        /* Sil/Tamamla Butonu */
+        .action-btn {
+            background: rgba(239, 68, 68, 0.1);
+            color: #fca5a5;
+            border: 1px solid rgba(239, 68, 68, 0.3);
+            padding: 15px 25px;
+            border-radius: 16px;
+            font-weight: 600;
+            font-size: 15px;
+            cursor: pointer;
+            transition: all 0.3s;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .action-btn:hover { background: rgba(239, 68, 68, 0.2); transform: scale(1.05); }
+        .action-btn:active { transform: scale(0.95); }
+
+        .empty-state { text-align: center; padding: 50px; color: #64748b; font-size: 18px; }
+
+        @media (max-width: 600px) {
+            .header-glass { flex-direction: column; gap: 20px; text-align: center; }
+            .appointment-card { flex-direction: column; align-items: flex-start; gap: 20px; }
+            .action-btn { width: 100%; justify-content: center; }
+        }
+    </style>
+</head>
+<body>
+    <div class="bg-glow"></div>
+    <div class="bg-glow-2"></div>
+
+    <div class="container">
+        <div class="header-glass">
+            <div class="header-left">
+                <h1>MAX İşgär Paneli</h1>
+                <p>Müşderileriň ýazgylaryna gözegçilik</p>
+            </div>
+            <div class="live-status">
+                <div class="dot"></div>
+                <span class="live-text" id="statusText">BİRİKTİRİLÝÄR...</span>
+            </div>
+        </div>
+
+        <div class="cards-container" id="liste">
+            <!-- Kartlar buraya Firebase'den otomatik gelecek -->
+            <div class="empty-state">Ýüklenilýär...</div>
+        </div>
+    </div>
+
+    <script>
+        // FIREBASE BAĞLANTISI (Aynı veritabanı)
+        const firebaseConfig = {
+            apiKey: "AIzaSyAzFwxW8nB155ILbdxuj5DREx2s_ltHme4",
+            authDomain: "makga-8a13a.firebaseapp.com",
+            databaseURL: "https://makga-8a13a-default-rtdb.europe-west1.firebasedatabase.app",
+            projectId: "makga-8a13a",
+            storageBucket: "makga-8a13a.firebasestorage.app",
+            messagingSenderId: "875840350708",
+            appId: "1:875840350708:web:eeea3cffd993d2a3d2f1a1"
+        };
+
+        firebase.initializeApp(firebaseConfig);
+        const db = firebase.database();
+        const listeDiv = document.getElementById("liste");
+
+        // Bağlantı durumunu kontrol et
+        db.ref(".info/connected").on("value", (snap) => {
+            const statusText = document.getElementById("statusText");
+            if (snap.val() === true) {
+                statusText.innerText = "ONLAÝN (JANLY)";
+                statusText.style.color = "#86efac";
+                document.querySelector('.dot').style.background = "#22c55e";
+                document.querySelector('.dot').style.boxShadow = "0 0 10px #22c55e";
+            } else {
+                statusText.innerText = "BAĞLANTI ÝOK";
+                statusText.style.color = "#fca5a5";
+                document.querySelector('.dot').style.background = "#ef4444";
+                document.querySelector('.dot').style.boxShadow = "0 0 10px #ef4444";
+            }
+        });
+
+        // Verileri Canlı Çekme
+        db.ref("randevular").on("value", (snapshot) => {
+            const data = snapshot.val();
+            listeDiv.innerHTML = ""; // Listeyi temizle
+            
+            if(!data) { 
+                listeDiv.innerHTML = "<div class='empty-state'>📭 Häzirlikçe täze randevu ýok.</div>"; 
+                return; 
+            }
+
+            // Verileri tersine çevir (En yeni en üstte çıksın)
+            Object.keys(data).reverse().forEach(id => {
+                const r = data[id];
+                
+                // Tarihi güzel formata çevirme
+                const sentDate = new Date(r.vakit).toLocaleString('tk-TM');
+                const appointDate = r.tarih.replace('T', ' Sagat: ');
+
+                const card = document.createElement("div");
+                card.className = "appointment-card";
+                card.innerHTML = `
+                    <div class="client-info">
+                        <h2>${r.musteri}</h2>
+                        
+                        <div class="detail-row">
+                            <span class="detail-icon">📅</span> 
+                            <span>Wagt: <b>${appointDate}</b></span>
+                        </div>
+                        
+                        <div class="detail-row">
+                            <span class="detail-icon">🛠️</span> 
+                            <span>Hyzmat: <b>${r.hizmetler}</b></span>
+                        </div>
+
+                        <div class="time-badge">Ugradylan wagt: ${sentDate}</div>
+                    </div>
+
+                    <button class="action-btn" onclick="sil('${id}')">
+                        <span>Tamamla & Poz</span>
+                        <span style="font-size: 18px;">🗑️</span>
+                    </button>
+                `;
+                listeDiv.appendChild(card);
+            });
+        });
+
+        // Silme Fonksiyonu
+        function sil(id) {
+            if(confirm("Bu randevuy tamamlandy edilip pozulsynmy?")) {
+                db.ref("randevular/" + id).remove();
+            }
+        }
+    </script>
+</body>
+</html>

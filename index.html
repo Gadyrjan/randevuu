@@ -3,451 +3,146 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Max Surat Merkezi</title>
+    <title>MAX Surat Merkezi</title>
+    <!-- Firebase SDK -->
     <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-database-compat.js"></script>
+    
     <style>
         * { margin: 0; padding: 0; box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
-        body { font-family: -apple-system, BlinkMacSystemFont, 'SF Pro Display', sans-serif; background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%); min-height: 100vh; padding: 0; overflow-x: hidden; }
-        .background-blur { position: fixed; width: 100%; height: 100%; background: radial-gradient(circle at 20% 30%, rgba(138, 43, 226, 0.3) 0%, transparent 50%), radial-gradient(circle at 80% 70%, rgba(0, 191, 255, 0.3) 0%, transparent 50%), radial-gradient(circle at 50% 50%, rgba(255, 105, 180, 0.2) 0%, transparent 60%); filter: blur(80px); animation: drift 20s infinite alternate; }
-        @keyframes drift { 0%, 100% { transform: translate(0, 0) scale(1); } 50% { transform: translate(30px, -30px) scale(1.1); } }
-        .container { position: relative; max-width: 430px; margin: 0 auto; padding: 20px; min-height: 100vh; display: flex; flex-direction: column; }
-        .language-selector { position: fixed; top: 20px; right: 20px; z-index: 1000; }
-        .lang-btn { background: rgba(255, 255, 255, 0.15); backdrop-filter: blur(20px); border: 1.5px solid rgba(255, 255, 255, 0.3); color: white; padding: 10px 16px; border-radius: 12px; cursor: pointer; font-size: 14px; font-weight: 600; display: flex; align-items: center; gap: 8px; transition: all 0.3s; }
-        .lang-btn:hover { background: rgba(255, 255, 255, 0.25); transform: translateY(-2px); }
-        .lang-dropdown { display: none; position: absolute; top: 50px; right: 0; background: rgba(255, 255, 255, 0.15); backdrop-filter: blur(30px); border: 1.5px solid rgba(255, 255, 255, 0.3); border-radius: 14px; overflow: hidden; min-width: 160px; box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3); }
-        .lang-dropdown.active { display: block; animation: slideDown 0.3s ease; }
-        @keyframes slideDown { from { opacity: 0; transform: translateY(-10px); } to { opacity: 1; transform: translateY(0); } }
-        .lang-option { padding: 12px 16px; color: white; cursor: pointer; transition: all 0.2s; display: flex; align-items: center; gap: 10px; font-size: 14px; font-weight: 500; }
-        .lang-option:hover { background: rgba(255, 255, 255, 0.2); }
-        .lang-option.selected { background: rgba(139, 92, 246, 0.3); }
-        .glass-card { background: rgba(255, 255, 255, 0.08); backdrop-filter: blur(40px) saturate(180%); border-radius: 32px; border: 1px solid rgba(255, 255, 255, 0.15); box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3), inset 0 1px 0 rgba(255, 255, 255, 0.1); overflow: hidden; margin-top: 40px; }
-        .header { padding: 40px 30px 30px; text-align: center; background: linear-gradient(135deg, rgba(138, 43, 226, 0.2) 0%, rgba(0, 191, 255, 0.2) 100%); }
-        .logo-container { width: 110px; height: 110px; background: linear-gradient(135deg, #8b5cf6 0%, #3b82f6 100%); border-radius: 26px; display: flex; align-items: center; justify-content: center; margin: 0 auto 25px; box-shadow: 0 15px 40px rgba(139, 92, 246, 0.5), inset 0 2px 0 rgba(255, 255, 255, 0.3), inset 0 -2px 8px rgba(0, 0, 0, 0.2); position: relative; overflow: hidden; }
-        .logo-container::before { content: ''; position: absolute; top: -50%; left: -50%; width: 200%; height: 200%; background: linear-gradient(45deg, transparent, rgba(255, 255, 255, 0.15), transparent); animation: shine 3s infinite; }
-        @keyframes shine { 0% { transform: translateX(-100%) translateY(-100%) rotate(45deg); } 100% { transform: translateX(100%) translateY(100%) rotate(45deg); } }
-        .logo-text { font-size: 48px; font-weight: 900; color: white; text-shadow: 0 4px 8px rgba(0, 0, 0, 0.3), 0 2px 4px rgba(0, 0, 0, 0.2); letter-spacing: -2px; position: relative; z-index: 1; }
-        .header h1 { font-size: 28px; font-weight: 700; color: white; margin-bottom: 8px; letter-spacing: -0.5px; }
-        .header p { font-size: 15px; color: rgba(255, 255, 255, 0.7); font-weight: 500; }
-        .form-container { padding: 30px; }
-        .form-group { margin-bottom: 24px; }
-        label { display: block; margin-bottom: 10px; color: rgba(255, 255, 255, 0.9); font-weight: 600; font-size: 15px; letter-spacing: -0.3px; }
-        input[type="text"], input[type="datetime-local"] { width: 100%; padding: 16px 18px; background: rgba(255, 255, 255, 0.1); backdrop-filter: blur(10px); border: 1.5px solid rgba(255, 255, 255, 0.2); border-radius: 16px; font-size: 17px; color: white; transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1); font-weight: 500; }
-        input::placeholder { color: rgba(255, 255, 255, 0.4); }
-        input:focus { outline: none; background: rgba(255, 255, 255, 0.15); border-color: rgba(138, 43, 226, 0.6); box-shadow: 0 0 0 4px rgba(138, 43, 226, 0.15), 0 8px 16px rgba(0, 0, 0, 0.2); transform: translateY(-2px); }
-        .service-options { display: flex; flex-direction: column; gap: 12px; }
-        .service-option { position: relative; display: flex; align-items: center; padding: 20px 20px; background: rgba(255, 255, 255, 0.08); backdrop-filter: blur(10px); border: 1.5px solid rgba(255, 255, 255, 0.15); border-radius: 18px; cursor: pointer; transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1); overflow: hidden; }
-        .service-option::before { content: ''; position: absolute; top: 0; left: 0; width: 100%; height: 100%; background: linear-gradient(135deg, rgba(138, 43, 226, 0.15) 0%, rgba(0, 191, 255, 0.15) 100%); opacity: 0; transition: opacity 0.3s; }
-        .service-option:hover { transform: translateX(4px); border-color: rgba(138, 43, 226, 0.5); }
-        .service-option:active { transform: scale(0.98); }
-        .service-option input[type="checkbox"] { appearance: none; width: 24px; height: 24px; border: 2px solid rgba(255, 255, 255, 0.4); border-radius: 8px; margin-right: 16px; cursor: pointer; position: relative; transition: all 0.3s; flex-shrink: 0; }
-        .service-option input[type="checkbox"]:checked { border-color: #8b5cf6; background: #8b5cf6; box-shadow: 0 0 0 4px rgba(139, 92, 246, 0.2), 0 4px 12px rgba(139, 92, 246, 0.4); }
-        .service-option input[type="checkbox"]:checked::after { content: '✓'; position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); color: white; font-size: 14px; font-weight: bold; }
-        .service-option:has(input:checked) { background: rgba(139, 92, 246, 0.2); border-color: #8b5cf6; box-shadow: 0 8px 24px rgba(139, 92, 246, 0.3), inset 0 1px 0 rgba(255, 255, 255, 0.1); }
-        .service-option:has(input:checked)::before { opacity: 1; }
-        .service-content { flex: 1; cursor: pointer; }
-        .service-icon { font-size: 24px; margin-right: 12px; }
-        .service-title { font-size: 17px; font-weight: 600; color: white; margin-bottom: 4px; letter-spacing: -0.3px; }
-        .service-subtitle { font-size: 14px; color: rgba(255, 255, 255, 0.6); font-weight: 500; margin-top: 4px; }
-        .price-info { font-size: 15px; color: #4ade80; font-weight: 700; margin-top: 8px; display: block; }
-        .price-list { margin-top: 8px; font-size: 14px; color: rgba(255, 255, 255, 0.8); line-height: 1.6; }
-        .notice-box { background: rgba(255, 193, 7, 0.15); backdrop-filter: blur(20px); border: 1.5px solid rgba(255, 193, 7, 0.3); border-radius: 18px; padding: 20px; margin-top: 20px; margin-bottom: 24px; }
-        .notice-header { display: flex; align-items: center; gap: 10px; margin-bottom: 15px; }
-        .notice-icon { font-size: 24px; }
-        .notice-title { font-size: 16px; font-weight: 700; color: #ffd54f; letter-spacing: -0.3px; }
-        .notice-text { font-size: 14px; color: rgba(255, 255, 255, 0.8); margin-bottom: 15px; line-height: 1.5; }
-        .contact-buttons { display: flex; flex-direction: column; gap: 10px; }
-        .contact-btn { display: flex; align-items: center; justify-content: space-between; padding: 14px 18px; background: rgba(76, 175, 80, 0.15); backdrop-filter: blur(10px); border: 1.5px solid rgba(76, 175, 80, 0.3); border-radius: 14px; text-decoration: none; transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1); }
-        .contact-btn:hover { background: rgba(76, 175, 80, 0.25); border-color: rgba(76, 175, 80, 0.5); transform: translateX(4px); }
-        .contact-btn:active { transform: scale(0.98); }
-        .contact-info { display: flex; align-items: center; gap: 12px; }
-        .contact-icon { width: 36px; height: 36px; background: rgba(76, 175, 80, 0.3); border-radius: 10px; display: flex; align-items: center; justify-content: center; font-size: 18px; }
-        .contact-details { display: flex; flex-direction: column; }
-        .contact-name { font-size: 15px; font-weight: 600; color: #81c784; letter-spacing: -0.3px; }
-        .contact-number { font-size: 13px; color: rgba(255, 255, 255, 0.6); margin-top: 2px; }
-        .call-arrow { color: #81c784; font-size: 20px; }
-        .submit-btn { width: 100%; padding: 18px; background: linear-gradient(135deg, #8b5cf6 0%, #3b82f6 100%); color: white; border: none; border-radius: 16px; font-size: 18px; font-weight: 700; cursor: pointer; transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1); box-shadow: 0 12px 24px rgba(139, 92, 246, 0.4), inset 0 1px 0 rgba(255, 255, 255, 0.2); letter-spacing: 0.3px; position: relative; overflow: hidden; }
-        .submit-btn::before { content: ''; position: absolute; top: 50%; left: 50%; width: 0; height: 0; border-radius: 50%; background: rgba(255, 255, 255, 0.2); transform: translate(-50%, -50%); transition: width 0.6s, height 0.6s; }
-        .submit-btn:hover { transform: translateY(-3px); box-shadow: 0 16px 32px rgba(139, 92, 246, 0.5), inset 0 1px 0 rgba(255, 255, 255, 0.3); }
-        .submit-btn:active { transform: scale(0.98); }
-        .submit-btn:active::before { width: 300px; height: 300px; }
-        .success-message { display: none; background: rgba(34, 197, 94, 0.15); backdrop-filter: blur(20px); border: 1.5px solid rgba(34, 197, 94, 0.3); color: #86efac; padding: 20px; border-radius: 18px; margin-top: 20px; text-align: center; font-weight: 600; font-size: 16px; animation: slideUp 0.4s cubic-bezier(0.4, 0, 0.2, 1); box-shadow: 0 8px 24px rgba(34, 197, 94, 0.2); }
-        @keyframes slideUp { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
-        .success-icon { font-size: 48px; margin-bottom: 10px; animation: scaleIn 0.5s cubic-bezier(0.34, 1.56, 0.64, 1); }
-        @keyframes scaleIn { from { transform: scale(0); } to { transform: scale(1); } }
-        input[type="datetime-local"]::-webkit-calendar-picker-indicator { filter: invert(1); opacity: 0.7; cursor: pointer; }
-        .safe-area-bottom { height: 34px; }
-        @media (max-width: 430px) {
-            .container { padding: 10px; }
-            .form-container { padding: 20px; }
-            .header h1 { font-size: 24px; }
-            .logo-container { width: 90px; height: 90px; border-radius: 22px; }
-            .logo-text { font-size: 40px; }
-            .language-selector { top: 10px; right: 10px; }
-        }
+        body { font-family: -apple-system, BlinkMacSystemFont, sans-serif; background: #0f172a; color: white; overflow-x: hidden; }
+        
+        /* Arkaplan Blur */
+        .bg-blur { position: fixed; width: 100%; height: 100%; background: radial-gradient(circle at 20% 30%, rgba(139, 92, 246, 0.2), transparent 50%), radial-gradient(circle at 80% 70%, rgba(59, 130, 246, 0.2), transparent 50%); filter: blur(80px); z-index: -1; }
+
+        /* Sidebar Menü */
+        .menu-btn { position: fixed; top: 20px; left: 20px; z-index: 1001; background: rgba(255,255,255,0.1); backdrop-filter: blur(10px); border: 1px solid rgba(255,255,255,0.2); width: 45px; height: 45px; border-radius: 12px; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 5px; cursor: pointer; }
+        .menu-btn span { width: 22px; height: 2px; background: white; border-radius: 2px; }
+        
+        .sidebar { position: fixed; top: 0; left: -300px; width: 280px; height: 100vh; background: rgba(15, 23, 42, 0.95); backdrop-filter: blur(30px); border-right: 1px solid rgba(255,255,255,0.1); z-index: 1000; transition: 0.3s; padding: 80px 20px; }
+        .sidebar.active { left: 0; }
+        .sidebar-item { padding: 15px; background: rgba(255,255,255,0.05); border-radius: 12px; margin-bottom: 10px; cursor: pointer; border: 1px solid rgba(255,255,255,0.1); display: flex; align-items: center; gap: 10px; }
+
+        /* Dil Seçici */
+        .lang-selector { position: fixed; top: 20px; right: 20px; z-index: 1001; }
+        .lang-btn { background: rgba(255,255,255,0.1); backdrop-filter: blur(10px); border: 1px solid rgba(255,255,255,0.2); color: white; padding: 8px 15px; border-radius: 10px; cursor: pointer; }
+
+        .container { max-width: 430px; margin: 0 auto; padding: 80px 20px 20px; }
+        .glass-card { background: rgba(255, 255, 255, 0.05); backdrop-filter: blur(40px); border-radius: 30px; border: 1px solid rgba(255, 255, 255, 0.1); padding: 25px; box-shadow: 0 20px 40px rgba(0,0,0,0.3); }
+
+        .logo { width: 80px; height: 80px; background: linear-gradient(135deg, #8b5cf6, #3b82f6); border-radius: 20px; display: flex; align-items: center; justify-content: center; margin: 0 auto 20px; font-size: 30px; font-weight: 900; }
+        
+        input { width: 100%; padding: 15px; margin-bottom: 15px; border-radius: 15px; border: 1px solid rgba(255,255,255,0.2); background: rgba(255,255,255,0.1); color: white; font-size: 16px; }
+        
+        .service-card { background: rgba(255,255,255,0.05); padding: 15px; border-radius: 18px; margin-bottom: 10px; border: 1px solid rgba(255,255,255,0.1); display: flex; align-items: flex-start; gap: 12px; cursor: pointer; }
+        .service-card input { width: 20px; height: 20px; margin-top: 5px; }
+        .price-tag { color: #fbbf24; font-size: 13px; font-weight: bold; margin-top: 4px; }
+
+        .submit-btn { width: 100%; padding: 18px; background: linear-gradient(135deg, #8b5cf6, #3b82f6); border: none; border-radius: 18px; color: white; font-weight: bold; font-size: 18px; cursor: pointer; margin-top: 15px; box-shadow: 0 10px 20px rgba(139, 92, 246, 0.3); }
+
+        .notice-box { background: rgba(251, 191, 36, 0.1); border: 1px solid rgba(251, 191, 36, 0.2); border-radius: 20px; padding: 20px; margin-top: 30px; }
+        .contact-link { display: flex; justify-content: space-between; align-items: center; background: rgba(255,255,255,0.05); padding: 12px; border-radius: 12px; margin-top: 8px; text-decoration: none; color: white; border: 1px solid rgba(255,255,255,0.1); }
     </style>
 </head>
 <body>
-    <div class="background-blur"></div>
+    <div class="bg-blur"></div>
+    
+    <div class="menu-btn" onclick="document.getElementById('sidebar').classList.toggle('active')">
+        <span></span><span></span><span></span>
+    </div>
 
-    <!-- Dil Seçici -->
-    <div class="language-selector">
-        <button class="lang-btn" onclick="toggleLangDropdown()">
-            <span id="currentLangFlag">🇹</span>
-            <span id="currentLangName">TM</span>
-        </button>
-        <div class="lang-dropdown" id="langDropdown">
-            <div class="lang-option selected" onclick="changeLang('tk')">
-                <span>🇹🇲</span><span>Türkmençe</span>
-            </div>
-            <div class="lang-option" onclick="changeLang('tr')">
-                <span>🇹🇷</span><span>Türkçe</span>
-            </div>
-            <div class="lang-option" onclick="changeLang('ru')">
-                <span>🇷🇺</span><span>Русский</span>
-            </div>
-            <div class="lang-option" onclick="changeLang('en')">
-                <span>🇬🇧</span><span>English</span>
-            </div>
-        </div>
+    <div class="lang-selector">
+        <button class="lang-btn" onclick="alert('Diller: TK, TR, RU, EN')">🇹🇲 TM</button>
+    </div>
+
+    <div class="sidebar" id="sidebar">
+        <h3 style="margin-bottom: 20px; color: #8b5cf6;">Kategoriýalar</h3>
+        <div class="sidebar-item">💾 Fleskalar</div>
+        <div class="sidebar-item">🎧 Nausniklar</div>
+        <div class="sidebar-item">🔌 Açkylar</div>
+        <div class="sidebar-item">🔋 Usblar</div>
+        <div class="sidebar-item">🔊 Kalonkalar</div>
+        <div class="sidebar-item">📡 Pultlar</div>
+        <div class="sidebar-item">📱 Telefon daşlary</div>
     </div>
 
     <div class="container">
         <div class="glass-card">
-            <div class="header">
-                <div class="logo-container">
-                    <div class="logo-text">MAX</div>
+            <div class="logo">MAX</div>
+            <h2 style="text-align: center; margin-bottom: 5px;">Surat Merkezi</h2>
+            <p style="text-align: center; color: #94a3b8; font-size: 14px; margin-bottom: 25px;">Onlaýn randevu ulgamy</p>
+
+            <form id="appointmentForm">
+                <input type="text" id="name" placeholder="Adyňyz we Familiýaňyz" required>
+                <input type="datetime-local" id="date" required>
+
+                <div class="service-card">
+                    <input type="checkbox" name="hizmet" value="Surat">
+                    <div>
+                        <div style="font-weight: 600;">📷 Surata düşmek</div>
+                        <div class="price-tag">Bahasy: 10 TMT</div>
+                    </div>
                 </div>
-                <h1 data-lang="title">Surat Merkezi</h1>
-                <p data-lang="subtitle">Onlaýn randevu ulgamy</p>
-            </div>
 
-            <div class="form-container">
-                <form id="appointmentForm">
-                    <div class="form-group">
-                        <label for="name" data-lang="nameLabel">Adyňyz we Familiýaňyz</label>
-                        <input type="text" id="name" required data-lang-placeholder="namePlaceholder">
+                <div class="service-card">
+                    <input type="checkbox" name="hizmet" value="Kopya">
+                    <div>
+                        <div style="font-weight: 600;">🖨️ Kopya etdirmek</div>
+                        <div style="font-size: 12px; color: #94a3b8;">Pasport 2TMT, Beýlekiler 1TMT</div>
                     </div>
+                </div>
 
-                    <div class="form-group">
-                        <label for="datetime" data-lang="dateLabel">Wagt saýlaň</label>
-                        <input type="datetime-local" id="datetime" required>
-                    </div>
+                <button type="submit" class="submit-btn" id="btnText">TASSYKLA</button>
+            </form>
 
-                    <div class="form-group">
-                        <label data-lang="serviceLabel">Hyzmatyň görnüşi (birini ýa-da ikisini saýlaň)</label>
-                        <div class="service-options">
-                            <label class="service-option">
-                                <input type="checkbox" id="service1" name="service" value="photo">
-                                <span class="service-icon">📷</span>
-                                <div class="service-content">
-                                    <div class="service-title" data-lang="service1Title">Surata düşmek</div>
-                                    <div class="service-subtitle" data-lang="service1Subtitle">Professional surat çekiliş</div>
-                                    <div class="price-info" data-lang="service1Price">Bahasy 10 TMT</div>
-                                </div>
-                            </label>
-
-                            <label class="service-option">
-                                <input type="checkbox" id="service2" name="service" value="copy">
-                                <span class="service-icon">🖨️</span>
-                                <div class="service-content">
-                                    <div class="service-title" data-lang="service2Title">Kopya etdirmek</div>
-                                    <div class="service-subtitle" data-lang="service2Subtitle">Surat we resminamalaryň kopiýasy</div>
-                                    <div class="price-list">
-                                        <div data-lang="copy1">Pasport 2 TMT</div>
-                                        <div data-lang="copy2">Şahadatnama we beýlekiler 1 TMT</div>
-                                    </div>
-                                </div>
-                            </label>
-                        </div>
-                    </div>
-
-                    <div class="notice-box">
-                        <div class="notice-header">
-                            <span class="notice-icon">⚠️</span>
-                            <span class="notice-title" data-lang="noticeTitle">Duýduruş!</span>
-                        </div>
-                        <p class="notice-text" data-lang="noticeText">Eger-de başga zatlar barada maglumat almak isleseňiz, aşakdaky nomerlara jaň ediň:</p>
-                        
-                        <div class="contact-buttons">
-                            <a href="tel:+99363517106" class="contact-btn">
-                                <div class="contact-info">
-                                    <div class="contact-icon">📞</div>
-                                    <div class="contact-details">
-                                        <span class="contact-name">Maksat</span>
-                                        <span class="contact-number">+993 63 517106</span>
-                                    </div>
-                                </div>
-                                <span class="call-arrow">→</span>
-                            </a>
-
-                            <a href="tel:+99361244811" class="contact-btn">
-                                <div class="contact-info">
-                                    <div class="contact-icon">📞</div>
-                                    <div class="contact-details">
-                                        <span class="contact-name">Gadyr</span>
-                                        <span class="contact-number">+993 61 244811</span>
-                                    </div>
-                                </div>
-                                <span class="call-arrow">→</span>
-                            </a>
-
-                            <a href="tel:+99363078751" class="contact-btn">
-                                <div class="contact-info">
-                                    <div class="contact-icon">📞</div>
-                                    <div class="contact-details">
-                                        <span class="contact-name">Ýagşy</span>
-                                        <span class="contact-number">+993 63 078751</span>
-                                    </div>
-                                </div>
-                                <span class="call-arrow">→</span>
-                            </a>
-                        </div>
-                    </div>
-
-                    <button type="submit" class="submit-btn" data-lang="submitBtn">Tassykla</button>
-
-                    <div class="success-message" id="successMessage">
-                        <div class="success-icon">✓</div>
-                        <div data-lang="successMsg1">Randevuňyz üstünlikli kabul edildi!</div>
-                        <div style="margin-top: 8px; font-size: 14px; opacity: 0.8;" data-lang="successMsg2">Sizi garaşýarys</div>
-                    </div>
-                </form>
+            <div class="notice-box">
+                <div style="color: #fbbf24; font-weight: bold; margin-bottom: 5px;">ÜNS BERIŇ!</div>
+                <p style="font-size: 13px; color: #cbd5e1; margin-bottom: 10px;">Maglumat almak üçin aşakdaky nomerlara jaň ediň:</p>
+                <div style="font-size: 11px; color: #4ade80; text-align: center; margin-bottom: 8px;">JAŇ ETMEK ÜÇIN ÜSTÜNE BASYŇ</div>
+                
+                <a href="tel:+99363517106" class="contact-link"><span>Maksat</span><span style="color: #4ade80;">+993 63 517106</span></a>
+                <a href="tel:+99361244811" class="contact-link"><span>Gadyr</span><span style="color: #4ade80;">+993 61 244811</span></a>
+                <a href="tel:+99363078751" class="contact-link"><span>Ýagşy</span><span style="color: #4ade80;">+993 63 078751</span></a>
             </div>
         </div>
-
-        <div class="safe-area-bottom"></div>
     </div>
 
     <script>
-        // Çeviri metinleri
-        const translations = {
-            tk: {
-                title: "Surat Merkezi",
-                subtitle: "Onlaýn randevu ulgamy",
-                nameLabel: "Adyňyz we Familiýaňyz",
-                namePlaceholder: "Mysal: Ahmet Muhammedow",
-                dateLabel: "Wagt saýlaň",
-                serviceLabel: "Hyzmatyň görnüşi (birini ýa-da ikisini saýlaň)",
-                service1Title: "Surata düşmek",
-                service1Subtitle: "Professional surat çekiliş",
-                service1Price: "Bahasy 10 TMT",
-                service2Title: "Kopya etdirmek",
-                service2Subtitle: "Surat we resminamalaryň kopiýasy",
-                copy1: "Pasport 2 TMT",
-                copy2: "Şahadatnama we beýlekiler 1 TMT",
-                noticeTitle: "Duýduruş!",
-                noticeText: "Eger-de başga zatlar barada maglumat almak isleseňiz, aşakdaky nomerlara jaň ediň:",
-                submitBtn: "Tassykla",
-                successMsg1: "Randevuňyz üstünlikli kabul edildi!",
-                successMsg2: "Sizi garaşýarys"
-            },
-            tr: {
-                title: "Fotoğraf Merkezi",
-                subtitle: "Online randevu sistemi",
-                nameLabel: "Adınız ve Soyadınız",
-                namePlaceholder: "Örnek: Ahmet Muhammedov",
-                dateLabel: "Tarih seçin",
-                serviceLabel: "Hizmet türü (birini veya ikisini seçin)",
-                service1Title: "Fotoğraf çekimi",
-                service1Subtitle: "Profesyonel fotoğraf çekimi",
-                service1Price: "Fiyatı 10 TMT",
-                service2Title: "Fotokopi",
-                service2Subtitle: "Fotoğraf ve belge kopyalama",
-                copy1: "Pasaport 2 TMT",
-                copy2: "Vize ve diğerler 1 TMT",
-                noticeTitle: "Duyuru!",
-                noticeText: "Diğer işler için arayın:",
-                submitBtn: "Onayla",
-                successMsg1: "Randevunuz başarıyla alındı!",
-                successMsg2: "Sizi bekliyoruz"
-            },
-            ru: {
-                title: "Фото Центр",
-                subtitle: "Система онлайн-записи",
-                nameLabel: "Ваше имя и фамилия",
-                namePlaceholder: "Пример: Ахмет Мухаммедов",
-                dateLabel: "Выберите время",
-                serviceLabel: "Тип услуги (выберите один или оба)",
-                service1Title: "Фотосъемка",
-                service1Subtitle: "Профессиональная фотосъемка",
-                service1Price: "Цена 10 ТМТ",
-                service2Title: "Копирование",
-                service2Subtitle: "Копирование фото и документов",
-                copy1: "Паспорт 2 ТМТ",
-                copy2: "Виза и другие документы 1 ТМТ",
-                noticeTitle: "Внимание!",
-                noticeText: "Для других вопросов звоните:",
-                submitBtn: "Подтвердить",
-                successMsg1: "Ваша запись успешно принята!",
-                successMsg2: "Ждем вас"
-            },
-            en: {
-                title: "Photo Center",
-                subtitle: "Online booking system",
-                nameLabel: "Your Name and Surname",
-                namePlaceholder: "Example: Ahmet Muhammedov",
-                dateLabel: "Select date and time",
-                serviceLabel: "Service type (select one or both)",
-                service1Title: "Photography",
-                service1Subtitle: "Professional photo shooting",
-                service1Price: "Price 10 TMT",
-                service2Title: "Photocopying",
-                service2Subtitle: "Photo and document copying",
-                copy1: "Passport 2 TMT",
-                copy2: "Visa and others 1 TMT",
-                noticeTitle: "Notice!",
-                noticeText: "For other matters, call:",
-                submitBtn: "Confirm",
-                successMsg1: "Your appointment has been successfully received!",
-                successMsg2: "We are waiting for you"
-            }
+        const firebaseConfig = {
+            apiKey: "AIzaSyAzFwxW8nB155ILbdxuj5DREx2s_ltHme4",
+            authDomain: "makga-8a13a.firebaseapp.com",
+            databaseURL: "https://makga-8a13a-default-rtdb.europe-west1.firebasedatabase.app",
+            projectId: "makga-8a13a",
+            storageBucket: "makga-8a13a.firebasestorage.app",
+            messagingSenderId: "875840350708",
+            appId: "1:875840350708:web:eeea3cffd993d2a3d2f1a1"
         };
-
-        let currentLang = localStorage.getItem('selectedLang') || 'tk';
-
-        function changeLang(lang) {
-            currentLang = lang;
-            
-            const flags = { tk: '🇹🇲', tr: '🇹🇷', ru: '🇷🇺', en: '🇬🇧' };
-            const names = { tk: 'TM', tr: 'TR', ru: 'RU', en: 'EN' };
-            
-            document.getElementById('currentLangFlag').textContent = flags[lang];
-            document.getElementById('currentLangName').textContent = names[lang];
-            
-            document.querySelectorAll('[data-lang]').forEach(element => {
-                const key = element.getAttribute('data-lang');
-                if (translations[lang][key]) {
-                    element.textContent = translations[lang][key];
-                }
-            });
-            
-            const nameInput = document.getElementById('name');
-            nameInput.placeholder = translations[lang].namePlaceholder;
-            
-            document.querySelectorAll('.lang-option').forEach(opt => opt.classList.remove('selected'));
-            event.target.closest('.lang-option').classList.add('selected');
-            
-            toggleLangDropdown();
-            
-            localStorage.setItem('selectedLang', lang);
-        }
-
-        function toggleLangDropdown() {
-            document.getElementById('langDropdown').classList.toggle('active');
-        }
-
-        document.addEventListener('click', function(e) {
-            if (!e.target.closest('.language-selector')) {
-                document.getElementById('langDropdown').classList.remove('active');
-            }
-        });
-
-        window.addEventListener('load', function() {
-            changeLang(currentLang);
-        });
-
-        function saveAppointment(appointment) {
-            let appointments = JSON.parse(localStorage.getItem('appointments') || '[]');
-            appointment.id = Date.now();
-            appointment.status = 'Täze';
-            appointment.createdAt = new Date().toISOString();
-            appointments.push(appointment);
-            localStorage.setItem('appointments', JSON.stringify(appointments));
-        }
-
-        function triggerHaptic(element) {
-            if (navigator.vibrate) navigator.vibrate(50);
-            element.classList.add('haptic');
-            setTimeout(() => element.classList.remove('haptic'), 100);
-        }
+        firebase.initializeApp(firebaseConfig);
+        const db = firebase.database();
 
         document.getElementById('appointmentForm').addEventListener('submit', function(e) {
             e.preventDefault();
-
-            const t = translations[currentLang];
-            const submitBtn = document.querySelector('.submit-btn');
-            triggerHaptic(submitBtn);
-
-            const name = document.getElementById('name').value.trim();
-            const datetime = document.getElementById('datetime').value;
+            const btn = document.getElementById('btnText');
+            const svcs = Array.from(document.querySelectorAll('input[name="hizmet"]:checked')).map(el => el.value);
             
-            const selectedServices = [];
-            const serviceNames = {
-                photo: { 
-                    tk: 'Surata düşmek (10 TMT)',
-                    tr: 'Fotoğraf çekimi (10 TMT)',
-                    ru: 'Фотосъемка (10 ТМТ)',
-                    en: 'Photography (10 TMT)'
-                },
-                copy: { 
-                    tk: 'Kopya etdirmek',
-                    tr: 'Fotokopi',
-                    ru: 'Копирование',
-                    en: 'Photocopying'
-                }
-            };
+            if(svcs.length === 0) { alert("Hyzmat saýlaň!"); return; }
             
-            document.querySelectorAll('input[name="service"]:checked').forEach(checkbox => {
-                selectedServices.push(serviceNames[checkbox.value][currentLang]);
-            });
+            btn.innerText = "UGRADYLYAR...";
+            btn.disabled = true;
 
-            if (selectedServices.length === 0) {
-                alert(currentLang === 'tk' ? 'Hyzmat saýlaň!' : 
-                      currentLang === 'tr' ? 'Hizmet seçin!' :
-                      currentLang === 'ru' ? 'Выберите услугу!' :
-                      'Select a service!');
-                return;
-            }
-
-            const appointment = {
-                musteri: name,
-                tarih: datetime,
-                hizmetler: selectedServices.join(", "),
-                dil: currentLang,
+            db.ref("randevular").push({
+                musteri: document.getElementById('name').value,
+                tarih: document.getElementById('date').value,
+                hyzmatlar: svcs.join(", "),
                 vakit: Date.now()
-            };
-
-            saveAppointment(appointment);
-
-            const successMsg = document.getElementById('successMessage');
-            successMsg.style.display = 'block';
-
-            this.reset();
-
-            setTimeout(() => {
-                successMsg.style.display = 'none';
-            }, 3000);
-
-            if (navigator.vibrate) {
-                navigator.vibrate(200);
-            }
-        });
-
-        const now = new Date();
-        now.setMinutes(now.getMinutes() - now.getTimezoneOffset());
-        document.getElementById('datetime').min = now.toISOString().slice(0, 16);
-
-        document.querySelectorAll('input[type="checkbox"]').forEach(checkbox => {
-            checkbox.addEventListener('change', function() {
-                triggerHaptic(this.closest('.service-option'));
-            });
-        });
-
-        document.querySelectorAll('input[type="text"], input[type="datetime-local"]').forEach(input => {
-            input.addEventListener('focus', function() {
-                if (navigator.vibrate) {
-                    navigator.vibrate(30);
-                }
-            });
-        });
-
-        document.querySelectorAll('.contact-btn').forEach(btn => {
-            btn.addEventListener('click', function() {
-                triggerHaptic(this);
-                if (navigator.vibrate) {
-                    navigator.vibrate([50, 30, 50]);
-                }
+            }).then(() => {
+                alert("Randevuňyz ugradyldy!");
+                this.reset();
+                btn.innerText = "TASSYKLA";
+                btn.disabled = false;
+            }).catch(err => {
+                alert("Hata: " + err.message);
+                btn.disabled = false;
             });
         });
     </script>

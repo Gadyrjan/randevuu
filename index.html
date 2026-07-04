@@ -24,10 +24,13 @@
         .container { max-width: 430px; margin: 0 auto; padding: 60px 20px 40px; }
         .glass-card { background: rgba(255, 255, 255, 0.05); backdrop-filter: blur(40px); border-radius: 35px; border: 1px solid rgba(255, 255, 255, 0.1); padding: 30px; box-shadow: 0 25px 50px rgba(0,0,0,0.4); }
 
-        .logo { width: 90px; height: 90px; background: linear-gradient(135deg, #8b5cf6, #3b82f6); border-radius: 24px; display: flex; align-items: center; justify-content: center; margin: 0 auto 25px; font-size: 35px; font-weight: 900; box-shadow: 0 15px 30px rgba(139, 92, 246, 0.4); }
+        .logo { width: 90px; height: 90px; background: linear-gradient(135deg, #8b5cf6, #3b82f6); border-radius: 24px; display: flex; align-items: center; justify-content: center; margin: 0 auto 15px; font-size: 35px; font-weight: 900; box-shadow: 0 15px 30px rgba(139, 92, 246, 0.4); }
         
+        /* Çalışma Saatleri Tasarımı */
+        .work-hours-badge { background: rgba(139, 92, 246, 0.15); border: 1px solid rgba(139, 92, 246, 0.3); padding: 8px 15px; border-radius: 20px; color: #a5b4fc; font-size: 13px; font-weight: 700; display: inline-block; margin-bottom: 25px; text-align: center; width: 100%; letter-spacing: 0.5px; }
+
         h1 { text-align: center; font-size: 26px; font-weight: 800; margin-bottom: 5px; letter-spacing: -1px; }
-        .subtitle { text-align: center; color: #94a3b8; font-size: 14px; margin-bottom: 30px; }
+        .subtitle { text-align: center; color: #94a3b8; font-size: 14px; margin-bottom: 20px; }
 
         label { display: block; margin-bottom: 8px; font-size: 14px; font-weight: 600; color: #cbd5e1; margin-left: 5px; }
         input { width: 100%; padding: 16px; margin-bottom: 20px; border-radius: 16px; border: 1px solid rgba(255,255,255,0.2); background: rgba(255,255,255,0.08); color: white; font-size: 16px; transition: 0.3s; }
@@ -37,7 +40,7 @@
         .service-option:has(input:checked) { border-color: #8b5cf6; background: rgba(139, 92, 246, 0.1); }
         .service-option input { width: 22px; height: 22px; margin: 0; cursor: pointer; }
         
-        .service-img { width: 65px; height: 65px; object-fit: contain; border-radius: 8px; background: rgba(255,255,255,0.05); padding: 5px; }
+        .service-img { width: 55px; height: 55px; object-fit: contain; border-radius: 8px; }
         .price { color: #fbbf24; font-size: 13px; font-weight: bold; margin-top: 4px; }
 
         .submit-btn { width: 100%; padding: 20px; background: linear-gradient(135deg, #8b5cf6, #3b82f6); border: none; border-radius: 20px; color: white; font-weight: 800; font-size: 18px; cursor: pointer; margin-top: 20px; box-shadow: 0 15px 30px rgba(139, 92, 246, 0.4); transition: 0.3s; }
@@ -49,7 +52,6 @@
         .call-instruction { font-size: 11px; color: #4ade80; text-align: center; margin-bottom: 10px; font-weight: 700; letter-spacing: 1px; }
         
         .contact-card { display: flex; justify-content: space-between; align-items: center; background: rgba(255,255,255,0.05); padding: 14px 18px; border-radius: 15px; margin-bottom: 10px; text-decoration: none; color: white; border: 1px solid rgba(255,255,255,0.1); transition: 0.2s; }
-        .contact-card:active { background: rgba(255,255,255,0.1); }
         .contact-name { font-weight: 600; font-size: 15px; }
         .contact-num { color: #4ade80; font-weight: 700; font-size: 14px; }
 
@@ -74,8 +76,14 @@
     <div class="container">
         <div class="glass-card">
             <div class="logo">MAX</div>
+            
             <h1 id="txt-title">Surat Merkezi</h1>
             <p class="subtitle" id="txt-subtitle">Onlaýn randevu ulgamy</p>
+
+            <!-- ÇALIŞMA SAATLERİ BURADA -->
+            <div class="work-hours-badge" id="txt-workhours">
+                🕒 Iş wagtymyz: 08:00 - 23:00 aralygy
+            </div>
 
             <form id="appointmentForm">
                 <label id="lbl-name">Adyňyz we Familiýaňyz</label>
@@ -89,8 +97,7 @@
 
                 <div class="service-option">
                     <input type="checkbox" name="svc" value="Surat">
-                    <!-- Canon Kamera Görseli -->
-                    <img src="https://cdn-icons-png.flaticon.com/512/1042/1042339.png" class="service-img" alt="Canon Camera">
+                    <img src="https://cdn-icons-png.flaticon.com/512/1042/1042339.png" class="service-img" alt="Foto">
                     <div>
                         <div style="font-weight: 700;" id="svc-photo">Surata düşmek</div>
                         <div class="price" id="prc-photo">Bahasy: 10 TMT</div>
@@ -99,8 +106,8 @@
 
                 <div class="service-option">
                     <input type="checkbox" name="svc" value="Kopya">
-                    <!-- Canon MF3010 Yeni Görsel -->
-                    <img src="https://www.canon.com.cy/media/i-SENSYS_MF3010_tcm125-866444.jpg" class="service-img" alt="Canon MF3010 Printer">
+                    <!-- GENEL YAZICI LOGOSU EKLENDİ -->
+                    <img src="https://cdn-icons-png.flaticon.com/512/2950/2950663.png" class="service-img" alt="Printer">
                     <div>
                         <div style="font-weight: 700;" id="svc-copy">Kopya etdirmek</div>
                         <div style="font-size: 12px; color: #94a3b8;" id="prc-copy">Pasport 2TMT, Beýlekiler 1TMT</div>
@@ -147,16 +154,81 @@
         const db = firebase.database();
 
         const langs = {
-            tk: { title:"Surat Merkezi", subtitle:"Onlaýn randevu ulgamy", name:"Adyňyz we Familiýaňyz", phone:"Telefon belgiňiz", date:"Wagt saýlaň", svc1:"Surata düşmek", prc1:"Bahasy: 10 TMT", svc2:"Kopya etdirmek", prc2:"Pasport 2TMT, Beýlekiler 1TMT", btn:"TASSYKLA", ntcT:"ÜNS BERIŇ!", ntcX:"Eger-de başga zatlar barada maglumat almak isleseňiz, aşakdaky nomerlara jaň ediň:", ntcI:"JAŇ ETMEK ÜÇIN ÜSTÜNE BASYŇ", success:"✅ Randevuňyz kabul edildi!" },
-            tr: { title:"Fotoğraf Merkezi", subtitle:"Online randevu sistemi", name:"Adınız ve Soyadınız", phone:"Telefon numaranız", date:"Zaman seçin", svc1:"Fotoğraf çekimi", prc1:"Ücret: 10 TMT", svc2:"Fotokopi", prc2:"Pasaport 2TMT, Diğerleri 1TMT", btn:"ONAYLA", ntcT:"DİKKAT!", ntcX:"Başka konularda bilgi almak isterseniz, aşağıdaki numaraları arayın:", ntcI:"ARAMAK İÇİN ÜZERİNE TIKLAYIN", success:"✅ Randevunuz kabul edildi!" },
-            ru: { title:"Фото Центр", subtitle:"Онлайн запись", name:"Имя и Фамилия", phone:"Номер телефона", date:"Выберите время", svc1:"Фотосъемка", prc1:"Цена: 10 TMT", svc2:"Копирование", prc2:"Паспорт 2TMT, Другое 1TMT", btn:"ПОДТВЕРДИТЬ", ntcT:"ВНИМАНИЕ!", ntcX:"Если вы хотите получить информацию по другим вопросам, звоните:", ntcI:"НАЖМИТЕ, ЧТОБЫ ПОЗВОНИТЬ", success:"✅ Запись принята!" },
-            en: { title:"Photo Center", subtitle:"Online booking system", name:"Name and Surname", phone:"Phone number", date:"Select time", svc1:"Photography", prc1:"Price: 10 TMT", svc2:"Photocopying", prc2:"Passport 2TMT, Others 1TMT", btn:"CONFIRM", ntcT:"NOTICE!", ntcX:"If you want to get information about other matters, call:", ntcI:"CLICK TO CALL", success:"✅ Appointment confirmed!" }
+            tk: { 
+                title:"Surat Merkezi", 
+                subtitle:"Onlaýn randevu ulgamy", 
+                workhours:"🕒 Iş wagtymyz: 08:00 - 23:00 aralygy",
+                name:"Adyňyz we Familiýaňyz", 
+                phone:"Telefon belgiňiz", 
+                date:"Wagt saýlaň", 
+                svc1:"Surata düşmek", 
+                prc1:"Bahasy: 10 TMT", 
+                svc2:"Kopya etdirmek", 
+                prc2:"Pasport 2TMT, Beýlekiler 1TMT", 
+                btn:"TASSYKLA", 
+                ntcT:"ÜNS BERIŇ!", 
+                ntcX:"Eger-de başga zatlar barada maglumat almak isleseňiz, aşakdaky nomerlara jaň ediň:", 
+                ntcI:"JAŇ ETMEK ÜÇIN ÜSTÜNE BASYŇ", 
+                success:"✅ Randevuňyz kabul edildi!" 
+            },
+            tr: { 
+                title:"Fotoğraf Merkezi", 
+                subtitle:"Online randevu sistemi", 
+                workhours:"🕒 Çalışma saatlerimiz: 08:00 - 23:00 arası",
+                name:"Adınız ve Soyadınız", 
+                phone:"Telefon numaranız", 
+                date:"Zaman seçin", 
+                svc1:"Fotoğraf çekimi", 
+                prc1:"Ücret: 10 TMT", 
+                svc2:"Fotokopi", 
+                prc2:"Pasaport 2TMT, Diğerleri 1TMT", 
+                btn:"ONAYLA", 
+                ntcT:"DİKKAT!", 
+                ntcX:"Başka konularda bilgi almak isterseniz, aşağıdaki numaraları arayın:", 
+                ntcI:"ARAMAK İÇİN ÜZERİNE TIKLAYIN", 
+                success:"✅ Randevunuz kabul edildi!" 
+            },
+            ru: { 
+                title:"Фото Центр", 
+                subtitle:"Онлайн запись", 
+                workhours:"🕒 Часы работы: с 08:00 до 23:00",
+                name:"Имя и Фамилия", 
+                phone:"Номер телефона", 
+                date:"Выберите время", 
+                svc1:"Фотосъемка", 
+                prc1:"Цена: 10 TMT", 
+                svc2:"Копирование", 
+                prc2:"Паспорт 2TMT, Другое 1TMT", 
+                btn:"ПОДТВЕРДИТЬ", 
+                ntcT:"ВНИМАНИЕ!", 
+                ntcX:"Для получения информации по другим вопросам, звоните:", 
+                ntcI:"НАЖМИТЕ, ЧТОБЫ ПОЗВОНИТЬ", 
+                success:"✅ Запись принята!" 
+            },
+            en: { 
+                title:"Photo Center", 
+                subtitle:"Online booking system", 
+                workhours:"🕒 Working hours: 08:00 AM - 11:00 PM",
+                name:"Name and Surname", 
+                phone:"Phone number", 
+                date:"Select time", 
+                svc1:"Photography", 
+                prc1:"Price: 10 TMT", 
+                svc2:"Photocopying", 
+                prc2:"Passport 2TMT, Others 1TMT", 
+                btn:"CONFIRM", 
+                ntcT:"NOTICE!", 
+                ntcX:"If you want to get information about other matters, call:", 
+                ntcI:"CLICK TO CALL", 
+                success:"✅ Appointment confirmed!" 
+            }
         };
 
         function setLang(l) {
             const d = langs[l];
             document.getElementById('txt-title').innerText = d.title;
             document.getElementById('txt-subtitle').innerText = d.subtitle;
+            document.getElementById('txt-workhours').innerText = d.workhours;
             document.getElementById('lbl-name').innerText = d.name;
             document.getElementById('lbl-phone').innerText = d.phone;
             document.getElementById('lbl-date').innerText = d.date;
@@ -196,7 +268,7 @@
                 document.getElementById('successMsg').style.display = 'block';
                 this.reset();
                 btn.disabled = false;
-                btn.innerText = "TASSYKLA";
+                btn.innerText = langs['tk'].btn;
                 setTimeout(() => { document.getElementById('successMsg').style.display = 'none'; }, 5000);
             });
         });

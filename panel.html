@@ -3,145 +3,110 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>MAX - Dolandyryş Merkezi</title>
+    <title>MAX - Dolandyryş Paneli</title>
+    <!-- Firebase SDK -->
     <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-database-compat.js"></script>
     
     <style>
         :root {
-            --ios-bg: #000000;
-            --ios-card: rgba(28, 28, 30, 0.6);
-            --ios-accent: #5e5ce6;
-            --ios-red: #ff453a;
-            --ios-green: #32d74b;
+            --bg: #000000;
+            --card: #1c1c1e;
+            --accent: #5e5ce6;
+            --green: #30d158;
+            --red: #ff453a;
+            --text-main: #ffffff;
+            --text-sec: #8e8e93;
         }
 
-        * { margin: 0; padding: 0; box-sizing: border-box; font-family: -apple-system, BlinkMacSystemFont, "SF Pro Display", sans-serif; }
+        * { margin: 0; padding: 0; box-sizing: border-box; font-family: -apple-system, BlinkMacSystemFont, sans-serif; }
 
         body { 
-            background-color: var(--ios-bg);
-            color: white;
+            background-color: var(--bg);
+            color: var(--text-main);
             min-height: 100vh;
-            overflow-x: hidden;
-            padding-bottom: 50px;
+            padding: 20px;
         }
 
-        /* iOS 26 Nebula Arka tarap */
-        .nebula {
-            position: fixed;
-            width: 100%; height: 100%;
-            background: 
-                radial-gradient(circle at 10% 10%, rgba(94, 92, 230, 0.15) 0%, transparent 40%),
-                radial-gradient(circle at 90% 90%, rgba(168, 85, 247, 0.15) 0%, transparent 40%);
-            filter: blur(100px);
-            z-index: -1;
-        }
+        .container { max-width: 500px; margin: 0 auto; }
 
-        .container { max-width: 500px; margin: 0 auto; padding: 20px; }
-
-        /* Header Taslamasy */
+        /* Header */
         .header {
-            padding: 30px 10px;
+            padding: 20px 5px;
+            margin-bottom: 20px;
             display: flex;
             justify-content: space-between;
-            align-items: flex-end;
+            align-items: center;
         }
 
-        .header h1 { font-size: 32px; font-weight: 800; letter-spacing: -1px; }
-        .header p { color: #8e8e93; font-size: 14px; font-weight: 500; }
+        .header h1 { font-size: 28px; font-weight: 700; letter-spacing: -0.5px; }
+        .header p { color: var(--text-sec); font-size: 14px; }
 
-        .status-pill {
-            background: rgba(50, 215, 75, 0.15);
-            color: var(--ios-green);
-            padding: 6px 15px;
-            border-radius: 20px;
-            font-size: 11px;
-            font-weight: 700;
-            text-transform: uppercase;
-            letter-spacing: 1px;
-            border: 1px solid rgba(50, 215, 75, 0.3);
-            display: flex; align-items: center; gap: 6px;
-        }
-        .status-dot { width: 8px; height: 8px; background: var(--ios-green); border-radius: 50%; box-shadow: 0 0 10px var(--ios-green); }
-
-        /* Ses rugsat düwmesi */
-        #sound-unlock {
-            background: var(--ios-accent);
+        /* Ses düwmesi - Hökman basmaly */
+        #sound-btn {
+            background: var(--accent);
             color: white; border: none;
-            width: 100%; padding: 15px;
-            border-radius: 18px; margin-bottom: 20px;
-            font-weight: 600; cursor: pointer;
-            display: flex; justify-content: center; gap: 10px;
-            animation: bounce 2s infinite;
+            width: 100%; padding: 16px;
+            border-radius: 14px; margin-bottom: 20px;
+            font-weight: 700; cursor: pointer;
+            font-size: 16px;
+            box-shadow: 0 4px 15px rgba(94, 92, 230, 0.3);
         }
 
-        @keyframes bounce { 0%, 100% {transform: scale(1);} 50% {transform: scale(1.02);} }
-
-        /* Randewu Kartlary */
-        .appointment-card {
-            background: var(--ios-card);
-            backdrop-filter: blur(30px) saturate(180%);
-            -webkit-backdrop-filter: blur(30px) saturate(180%);
-            border-radius: 28px;
-            padding: 22px;
-            margin-bottom: 16px;
-            border: 1px solid rgba(255, 255, 255, 0.08);
+        /* Randewu Karty - Has dury we okalýan */
+        .card {
+            background: var(--card);
+            border-radius: 20px;
+            padding: 20px;
+            margin-bottom: 15px;
+            border: 1px solid #38383a;
             position: relative;
-            transition: 0.4s cubic-bezier(0.4, 0, 0.2, 1);
-            animation: slideIn 0.5s ease-out;
+            animation: fadeIn 0.4s ease;
         }
 
-        @keyframes slideIn { from { opacity: 0; transform: scale(0.9) translateY(20px); } to { opacity: 1; transform: scale(1) translateY(0); } }
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
 
-        .appointment-card:hover { transform: scale(1.02); background: rgba(44, 44, 46, 0.8); }
-
-        .cust-name { font-size: 20px; font-weight: 700; margin-bottom: 5px; color: #fff; }
+        .name { font-size: 22px; font-weight: 700; margin-bottom: 10px; color: #fff; }
         
-        .phone-box {
-            display: inline-flex; align-items: center; gap: 8px;
-            color: var(--ios-green); font-weight: 600; font-size: 15px;
+        .phone {
+            display: inline-flex; align-items: center;
+            color: var(--green); font-weight: 700; font-size: 18px;
             text-decoration: none; margin-bottom: 15px;
-            background: rgba(50, 215, 75, 0.1); padding: 5px 12px; border-radius: 10px;
+            background: rgba(48, 209, 88, 0.15); 
+            padding: 8px 15px; border-radius: 12px;
         }
 
-        .info-grid { display: grid; grid-template-columns: 1fr; gap: 8px; color: #aeaeb2; font-size: 14px; }
-        .info-item { display: flex; align-items: center; gap: 10px; }
-        .icon-bg { width: 28px; height: 28px; background: rgba(255,255,255,0.05); border-radius: 8px; display: flex; align-items: center; justify-content: center; font-size: 14px; }
+        .info-row { margin-bottom: 8px; font-size: 15px; color: #d1d1d6; display: flex; align-items: center; gap: 10px; }
+        .label { color: var(--text-sec); font-weight: 500; min-width: 70px; }
 
         .delete-btn {
-            position: absolute; right: 20px; top: 22px;
-            width: 40px; height: 40px;
-            background: rgba(255, 69, 58, 0.15);
-            border: none; border-radius: 50%;
-            color: var(--ios-red); cursor: pointer;
-            display: flex; align-items: center; justify-content: center; font-size: 18px;
+            position: absolute; right: 15px; top: 15px;
+            background: rgba(255, 69, 58, 0.2);
+            border: none; border-radius: 10px;
+            color: var(--red); padding: 8px 12px; font-weight: 700; cursor: pointer;
         }
 
-        .time-tag {
-            font-size: 11px; color: #636366; text-align: right; margin-top: 15px;
-            font-weight: 500;
+        .time-stamp {
+            font-size: 12px; color: var(--text-sec); margin-top: 15px; border-top: 1px solid #38383a; padding-top: 10px;
         }
 
-        .empty { text-align: center; margin-top: 100px; color: #48484a; font-size: 18px; font-weight: 600; }
+        .empty { text-align: center; padding: 100px 20px; color: var(--text-sec); font-size: 18px; }
     </style>
 </head>
 <body>
-    <div class="nebula"></div>
 
     <div class="container">
         <div class="header">
             <div>
                 <h1>Randewular</h1>
-                <p id="count-text">Hemme zat ýerinde</p>
+                <p id="counter">Sany: 0</p>
             </div>
-            <div class="status-pill">
-                <div class="status-dot"></div> JANLY
-            </div>
+            <div id="online-tag" style="color: var(--green); font-weight: 700; font-size: 12px;">● ONLAÝN</div>
         </div>
 
-        <!-- Sesiň açylmagy üçin (Brawzerler üçin gerek) -->
-        <button id="sound-unlock" onclick="unlockSound()">
-            🔔 Sesi işjeňleşdir (Iphone SMS)
+        <!-- SESI AÇMAK ÜÇIN -->
+        <button id="sound-btn" onclick="enableSound()">
+            🔔 Sesli bildirişi işjeňleşdir
         </button>
 
         <div id="list">
@@ -149,11 +114,10 @@
         </div>
     </div>
 
-    <!-- iPhone SMS Sesi -->
-    <audio id="iosSound" src="https://www.zedge.net/ringtone/5745e94b-4c40-3669-8736-d2459b369c0d" preload="auto"></audio>
+    <!-- iPhone SMS Sesi (Tritone) -->
+    <audio id="iosSound" src="https://raw.githubusercontent.com/Anis-M-H/notification-sounds/main/iphone_sms.mp3" preload="auto"></audio>
 
     <script>
-        // Firebase Config
         const firebaseConfig = {
             apiKey: "AIzaSyAzFwxW8nB155ILbdxuj5DREx2s_ltHme4",
             authDomain: "makga-8a13a.firebaseapp.com",
@@ -166,71 +130,69 @@
         firebase.initializeApp(firebaseConfig);
         const db = firebase.database();
 
-        let initialDataLoaded = false;
-        const sound = document.getElementById("iosSound");
+        let canPlaySound = false;
+        let isFirstLoad = true;
 
-        // Sesi işledip başlamak üçin
-        function unlockSound() {
-            sound.play().then(() => {
-                sound.pause();
-                sound.currentTime = 0;
-                document.getElementById("sound-unlock").style.display = "none";
-            });
+        function enableSound() {
+            const audio = document.getElementById("iosSound");
+            audio.play().then(() => {
+                audio.pause();
+                audio.currentTime = 0;
+                canPlaySound = true;
+                document.getElementById("sound-btn").style.display = "none";
+                alert("Ses işjeňleşdi! Täze randewu gelende iPhone sesi çalar.");
+            }).catch(e => alert("Sesi açyp bolmady."));
         }
 
-        // Täze randewu gelende ses çalmak
-        db.ref("randevular").limitToLast(1).on("child_added", (snap) => {
-            if (initialDataLoaded) {
-                // iPhone SMS Tritone sesi çalýar
-                const tritone = new Audio("https://raw.githubusercontent.com/Anis-M-H/notification-sounds/main/iphone_sms.mp3");
-                tritone.play().catch(e => console.log("Ses çalmakda säwlik."));
+        // Täze randewu gelende
+        db.ref("randevular").on("child_added", (snap) => {
+            if (!isFirstLoad && canPlaySound) {
+                const audio = document.getElementById("iosSound");
+                audio.play().catch(e => console.log("Ses çalynmady."));
             }
         });
 
-        // Maglumatlary ekrana çykarmak
+        // Listäni ekrana çykarmak
         db.ref("randevular").on("value", (snap) => {
             const listDiv = document.getElementById("list");
             const data = snap.val();
             listDiv.innerHTML = "";
-            initialDataLoaded = true;
-
+            
             if(!data) {
-                listDiv.innerHTML = '<div class="empty">📭 Täze randewu ýok</div>';
-                document.getElementById("count-text").innerText = "Randewu ýok";
+                listDiv.innerHTML = '<div class="empty">Häzirlikçe randewu ýok.</div>';
+                document.getElementById("counter").innerText = "Sany: 0";
+                isFirstLoad = false;
                 return;
             }
 
             const keys = Object.keys(data).reverse();
-            document.getElementById("count-text").innerText = keys.length + " sany randewu bar";
+            document.getElementById("counter").innerText = "Sany: " + keys.length;
 
             keys.forEach(id => {
                 const r = data[id];
                 const card = document.createElement("div");
-                card.className = "appointment-card";
+                card.className = "card";
                 card.innerHTML = `
-                    <button class="delete-btn" onclick="sil('${id}')">✕</button>
-                    <div class="cust-name">${r.musteri}</div>
-                    <a href="tel:${r.telefon}" class="phone-box">
-                        <span>📞</span> ${r.telefon}
-                    </a>
-                    <div class="info-grid">
-                        <div class="info-item">
-                            <div class="icon-bg">📅</div>
-                            <span>Wagty: <b>${r.tarih.replace("T", " - ")}</b></span>
-                        </div>
-                        <div class="info-item">
-                            <div class="icon-bg">🛠️</div>
-                            <span>Hyzmat: <b>${r.hizmetler}</b></span>
-                        </div>
+                    <button class="delete-btn" onclick="sil('${id}')">Poz</button>
+                    <div class="name">${r.musteri}</div>
+                    <a href="tel:${r.telefon}" class="phone">📞 ${r.telefon}</a>
+                    <div class="info-row">
+                        <span class="label">Wagty:</span>
+                        <b>${r.tarih.replace("T", " | ")}</b>
                     </div>
-                    <div class="time-tag">Gelen wagty: ${new Date(r.vakit).toLocaleTimeString()}</div>
+                    <div class="info-row">
+                        <span class="label">Hyzmat:</span>
+                        <b>${r.hizmetler}</b>
+                    </div>
+                    <div class="time-stamp">Ugradylan wagty: ${new Date(r.vakit).toLocaleTimeString()}</div>
                 `;
                 listDiv.appendChild(card);
             });
+            isFirstLoad = false;
         });
 
         function sil(id) {
-            if(confirm("Bu ýazgy pozulsynmy?")) {
+            if(confirm("Bu randewu pozulsynmy?")) {
                 db.ref("randevular/" + id).remove();
             }
         }

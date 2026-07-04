@@ -12,10 +12,8 @@
         * { margin: 0; padding: 0; box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
         body { font-family: -apple-system, BlinkMacSystemFont, 'SF Pro Display', sans-serif; background: #0f172a; color: white; overflow-x: hidden; min-height: 100vh; }
         
-        /* Arkaplan Blur Efekti */
         .bg-blur { position: fixed; width: 100%; height: 100%; background: radial-gradient(circle at 20% 30%, rgba(139, 92, 246, 0.2), transparent 50%), radial-gradient(circle at 80% 70%, rgba(59, 130, 246, 0.2), transparent 50%); filter: blur(80px); z-index: -1; }
 
-        /* Dil Seçici (Sağ Üst) */
         .lang-selector { position: fixed; top: 20px; right: 20px; z-index: 1001; }
         .lang-btn { background: rgba(255,255,255,0.1); backdrop-filter: blur(15px); border: 1px solid rgba(255,255,255,0.2); color: white; padding: 10px 15px; border-radius: 12px; cursor: pointer; font-weight: 600; display: flex; align-items: center; gap: 8px; }
         .lang-dropdown { display: none; position: absolute; top: 55px; right: 0; background: rgba(15, 23, 42, 0.95); backdrop-filter: blur(20px); border: 1px solid rgba(255,255,255,0.1); border-radius: 15px; overflow: hidden; min-width: 150px; }
@@ -23,7 +21,6 @@
         .lang-option { padding: 12px 15px; cursor: pointer; transition: 0.2s; font-size: 14px; display: flex; align-items: center; gap: 10px; }
         .lang-option:hover { background: rgba(255,255,255,0.1); }
 
-        /* Ana Kart */
         .container { max-width: 430px; margin: 0 auto; padding: 60px 20px 40px; }
         .glass-card { background: rgba(255, 255, 255, 0.05); backdrop-filter: blur(40px); border-radius: 35px; border: 1px solid rgba(255, 255, 255, 0.1); padding: 30px; box-shadow: 0 25px 50px rgba(0,0,0,0.4); }
 
@@ -32,20 +29,20 @@
         h1 { text-align: center; font-size: 26px; font-weight: 800; margin-bottom: 5px; letter-spacing: -1px; }
         .subtitle { text-align: center; color: #94a3b8; font-size: 14px; margin-bottom: 30px; }
 
-        /* Form Elemanları */
         label { display: block; margin-bottom: 8px; font-size: 14px; font-weight: 600; color: #cbd5e1; margin-left: 5px; }
         input { width: 100%; padding: 16px; margin-bottom: 20px; border-radius: 16px; border: 1px solid rgba(255,255,255,0.2); background: rgba(255,255,255,0.08); color: white; font-size: 16px; transition: 0.3s; }
         input:focus { outline: none; border-color: #8b5cf6; background: rgba(255,255,255,0.15); }
         
-        .service-option { background: rgba(255,255,255,0.05); padding: 18px; border-radius: 20px; margin-bottom: 12px; border: 1.5px solid rgba(255,255,255,0.1); display: flex; align-items: flex-start; gap: 15px; cursor: pointer; transition: 0.3s; }
+        .service-option { background: rgba(255,255,255,0.05); padding: 18px; border-radius: 20px; margin-bottom: 12px; border: 1.5px solid rgba(255,255,255,0.1); display: flex; align-items: center; gap: 15px; cursor: pointer; transition: 0.3s; }
         .service-option:has(input:checked) { border-color: #8b5cf6; background: rgba(139, 92, 246, 0.1); }
         .service-option input { width: 22px; height: 22px; margin: 0; cursor: pointer; }
+        
+        .service-img { width: 50px; height: 50px; object-fit: contain; border-radius: 8px; }
         .price { color: #fbbf24; font-size: 13px; font-weight: bold; margin-top: 4px; }
 
         .submit-btn { width: 100%; padding: 20px; background: linear-gradient(135deg, #8b5cf6, #3b82f6); border: none; border-radius: 20px; color: white; font-weight: 800; font-size: 18px; cursor: pointer; margin-top: 20px; box-shadow: 0 15px 30px rgba(139, 92, 246, 0.4); transition: 0.3s; }
         .submit-btn:active { transform: scale(0.96); }
 
-        /* İletişim Bilgileri */
         .notice-box { background: rgba(251, 191, 36, 0.1); border: 1px solid rgba(251, 191, 36, 0.2); border-radius: 24px; padding: 20px; margin-top: 35px; }
         .notice-title { color: #fbbf24; font-weight: 800; font-size: 16px; margin-bottom: 8px; }
         .notice-text { font-size: 13px; color: #cbd5e1; line-height: 1.5; margin-bottom: 15px; }
@@ -62,7 +59,6 @@
 <body>
     <div class="bg-blur"></div>
     
-    <!-- Dil Seçici -->
     <div class="lang-selector">
         <button class="lang-btn" onclick="document.getElementById('langDrop').classList.toggle('active')">
             <span id="curFlag">🇹🇲</span> <span id="curName">TM</span>
@@ -93,6 +89,7 @@
 
                 <div class="service-option">
                     <input type="checkbox" name="svc" value="Surat">
+                    <img src="https://cdn-icons-png.flaticon.com/512/1042/1042339.png" class="service-img" alt="Canon">
                     <div>
                         <div style="font-weight: 700;" id="svc-photo">Surata düşmek</div>
                         <div class="price" id="prc-photo">Bahasy: 10 TMT</div>
@@ -101,6 +98,7 @@
 
                 <div class="service-option">
                     <input type="checkbox" name="svc" value="Kopya">
+                    <img src="https://cdn-icons-png.flaticon.com/512/2950/2950663.png" class="service-img" alt="Copy">
                     <div>
                         <div style="font-weight: 700;" id="svc-copy">Kopya etdirmek</div>
                         <div style="font-size: 12px; color: #94a3b8;" id="prc-copy">Pasport 2TMT, Beýlekiler 1TMT</div>
@@ -112,7 +110,6 @@
 
             <div class="success-msg" id="successMsg">✅ Randevuňyz kabul edildi!</div>
 
-            <!-- İletişim Bölümü -->
             <div class="notice-box">
                 <div class="notice-title" id="ntc-title">ÜNS BERIŇ!</div>
                 <p class="notice-text" id="ntc-text">Eger-de başga zatlar barada maglumat almak isleseňiz, aşakdaky nomerlara jaň ediň:</p>
@@ -135,7 +132,6 @@
     </div>
 
     <script>
-        // FIREBASE BAĞLANTISI
         const firebaseConfig = {
             apiKey: "AIzaSyAzFwxW8nB155ILbdxuj5DREx2s_ltHme4",
             authDomain: "makga-8a13a.firebaseapp.com",
@@ -148,7 +144,6 @@
         firebase.initializeApp(firebaseConfig);
         const db = firebase.database();
 
-        // DİL VERİLERİ
         const langs = {
             tk: { title:"Surat Merkezi", subtitle:"Onlaýn randevu ulgamy", name:"Adyňyz we Familiýaňyz", phone:"Telefon belgiňiz", date:"Wagt saýlaň", svc1:"Surata düşmek", prc1:"Bahasy: 10 TMT", svc2:"Kopya etdirmek", prc2:"Pasport 2TMT, Beýlekiler 1TMT", btn:"TASSYKLA", ntcT:"ÜNS BERIŇ!", ntcX:"Eger-de başga zatlar barada maglumat almak isleseňiz, aşakdaky nomerlara jaň ediň:", ntcI:"JAŇ ETMEK ÜÇIN ÜSTÜNE BASYŇ", success:"✅ Randevuňyz kabul edildi!" },
             tr: { title:"Fotoğraf Merkezi", subtitle:"Online randevu sistemi", name:"Adınız ve Soyadınız", phone:"Telefon numaranız", date:"Zaman seçin", svc1:"Fotoğraf çekimi", prc1:"Ücret: 10 TMT", svc2:"Fotokopi", prc2:"Pasaport 2TMT, Diğerleri 1TMT", btn:"ONAYLA", ntcT:"DİKKAT!", ntcX:"Başka konularda bilgi almak isterseniz, aşağıdaki numaraları arayın:", ntcI:"ARAMAK İÇİN ÜZERİNE TIKLAYIN", success:"✅ Randevunuz kabul edildi!" },
@@ -179,7 +174,6 @@
             document.getElementById('langDrop').classList.remove('active');
         }
 
-        // FORM GÖNDERME
         document.getElementById('appointmentForm').addEventListener('submit', function(e) {
             e.preventDefault();
             const btn = document.getElementById('btn-submit');
@@ -200,7 +194,7 @@
                 document.getElementById('successMsg').style.display = 'block';
                 this.reset();
                 btn.disabled = false;
-                btn.innerText = langs['tk'].btn;
+                btn.innerText = "TASSYKLA";
                 setTimeout(() => { document.getElementById('successMsg').style.display = 'none'; }, 5000);
             });
         });

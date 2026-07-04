@@ -37,7 +37,7 @@
         .service-option:has(input:checked) { border-color: #8b5cf6; background: rgba(139, 92, 246, 0.1); }
         .service-option input { width: 22px; height: 22px; margin: 0; cursor: pointer; }
         
-        .service-img { width: 60px; height: 60px; object-fit: contain; border-radius: 8px; }
+        .service-img { width: 65px; height: 65px; object-fit: contain; border-radius: 8px; background: rgba(255,255,255,0.05); padding: 5px; }
         .price { color: #fbbf24; font-size: 13px; font-weight: bold; margin-top: 4px; }
 
         .submit-btn { width: 100%; padding: 20px; background: linear-gradient(135deg, #8b5cf6, #3b82f6); border: none; border-radius: 20px; color: white; font-weight: 800; font-size: 18px; cursor: pointer; margin-top: 20px; box-shadow: 0 15px 30px rgba(139, 92, 246, 0.4); transition: 0.3s; }
@@ -53,7 +53,7 @@
         .contact-name { font-weight: 600; font-size: 15px; }
         .contact-num { color: #4ade80; font-weight: 700; font-size: 14px; }
 
-        .success-msg { display: none; background: rgba(34, 197, 94, 0.2); color: #86efac; padding: 20px; border-radius: 20px; margin-top: 20px; text-align: center; font-weight: bold; animation: pop 0.4s ease; }
+        .success-msg { display: none; background: rgba(34, 197, 94, 0.2); color: #86efac; padding: 20px; border-radius: 20px; margin-top: 20px; text-align: center; font-weight: bold; }
     </style>
 </head>
 <body>
@@ -89,6 +89,7 @@
 
                 <div class="service-option">
                     <input type="checkbox" name="svc" value="Surat">
+                    <!-- Canon Kamera Görseli -->
                     <img src="https://cdn-icons-png.flaticon.com/512/1042/1042339.png" class="service-img" alt="Canon Camera">
                     <div>
                         <div style="font-weight: 700;" id="svc-photo">Surata düşmek</div>
@@ -98,7 +99,8 @@
 
                 <div class="service-option">
                     <input type="checkbox" name="svc" value="Kopya">
-                    <img src="https://g.icecat.biz/img/gallery_medium/10793741_5871.jpg" class="service-img" alt="Canon MF3010">
+                    <!-- Canon MF3010 Yeni Görsel -->
+                    <img src="https://www.canon.com.cy/media/i-SENSYS_MF3010_tcm125-866444.jpg" class="service-img" alt="Canon MF3010 Printer">
                     <div>
                         <div style="font-weight: 700;" id="svc-copy">Kopya etdirmek</div>
                         <div style="font-size: 12px; color: #94a3b8;" id="prc-copy">Pasport 2TMT, Beýlekiler 1TMT</div>
